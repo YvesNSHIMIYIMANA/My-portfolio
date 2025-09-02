@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yves Nshimiyimana - Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
+    body { background: #f5f7fa; color: #333; line-height: 1.6; padding-top: 70px; transition: background 0.3s, color 0.3s; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Dark Mode */
+    body.dark-mode { background: #121212; color: #f0f0f0; }
+    body.dark-mode nav { background: #1f1f1f; }
+    body.dark-mode nav ul li a:hover { color: #ffcc00; }
+    body.dark-mode .skill-card, body.dark-mode .project-card, body.dark-mode .contact { background: #1f1f1f; box-shadow: 0px 4px 12px rgba(255,255,255,0.05); }
+    body.dark-mode footer { background: #1f1f1f; }
+
+    /* Navbar */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; background: #0077cc;
+      display: flex; justify-content: space-between; align-items: center; padding: 12px 40px; z-index: 1000;
+    }
+    nav ul { display: flex; list-style: none; gap: 30px; }
+    nav ul li a { color: white; font-weight: 600; transition: color 0.3s; }
+    nav ul li a:hover { color: #ffcc00; }
+    #toggle-btn { cursor: pointer; background: #ffcc00; padding: 8px 15px; border-radius: 6px; font-weight: 600; color: #0077cc; transition: 0.3s; }
+    #toggle-btn:hover { background: #ffc107; }
+
+    /* Hamburger menu for mobile */
+    .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+    .hamburger div { width: 25px; height: 3px; background: white; transition: 0.3s; }
+    @media screen and (max-width: 768px) {
+      nav ul { position: fixed; top: 70px; left: -100%; flex-direction: column; background: #0077cc; width: 100%; height: calc(100% - 70px); justify-content: center; align-items: center; transition: 0.3s; }
+      nav ul.show { left: 0; }
+      .hamburger { display: flex; }
+      #toggle-btn { display: none; }
+    }
+
+    /* Header */
+    header { background: linear-gradient(to right, #0077cc, #00b3b3); color: white; text-align: center; padding: 120px 20px 60px; }
+    header h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 700; }
+    header p { font-size: 1.3rem; font-weight: 400; margin-bottom: 20px; }
+    .header-buttons a { display: inline-block; margin: 10px; padding: 12px 25px; border-radius: 8px; font-weight: 600; color: white; background: #ffcc00; transition: 0.3s; }
+    .header-buttons a:hover { background: #ffc107; }
+
+    /* Sections */
+    section { padding: 80px 20px; max-width: 1100px; margin: auto; }
+    section h2 { text-align: center; margin-bottom: 40px; font-size: 2rem; color: #0077cc; }
+
+    /* About */
+    .about { display: flex; flex-wrap: wrap; align-items: center; gap: 30px; }
+    .about img { width: 220px; border-radius: 50%; box-shadow: 0px 6px 12px rgba(0,0,0,0.2); transition: transform 0.3s; }
+    .about img:hover { transform: scale(1.05); }
+    .about-text { flex: 1; }
+    .about-text p { font-size: 1.1rem; margin-bottom: 12px; }
+
+    /* Skills */
+    .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
+    .skill-card { background: white; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0px 4px 8px rgba(0,0,0,0.1); font-weight: 600; transition: transform 0.3s, background 0.3s; }
+    .skill-card:hover { transform: translateY(-6px); background: #e6f3ff; }
+
+    /* Projects */
+    .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+    .project-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0px 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s, background 0.3s; }
+    .project-card:hover { transform: translateY(-5px); }
+    .project-card h3 { margin-bottom: 10px; color: #0077cc; }
+
+    /* Contact */
+    .contact { text-align: center; background: #f0f0f0; padding: 50px; border-radius: 12px; transition: background 0.3s; }
+    .contact p { margin: 15px 0; font-size: 1.1rem; }
+    .contact .btn { display: inline-block; margin: 10px; padding: 12px 25px; border-radius: 8px; font-weight: 600; color: white; transition: 0.3s; }
+    .btn-phone { background: #0077cc; }
+    .btn-phone:hover { background: #005fa3; }
+    .btn-whatsapp { background: #25d366; }
+    .btn-whatsapp:hover { background: #1da851; }
+    .social-icons { margin-top: 20px; }
+    .social-icons a { color: #0077cc; font-size: 1.8rem; margin: 0 12px; transition: color 0.3s; }
+    .social-icons a:hover { color: #ffcc00; }
+
+    /* Footer */
+    footer { text-align: center; padding: 20px; background: #0077cc; color: white; margin-top: 20px; transition: background 0.3s; }
+
+    @media screen and (max-width:768px){
+      .about { flex-direction: column; align-items: center; text-align: center; }
+      .about-text { flex: unset; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="hamburger" id="hamburger">
+      <div></div><div></div><div></div>
+    </div>
+    <ul id="nav-links">
+      <li><a href="#about">About Me</a></li>
+      <li><a href="#skills">My Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact Me</a></li>
+    </ul>
+    <button id="toggle-btn">Dark Mode</button>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <h1>Yves Nshimiyimana</h1>
+    <p>Software Developer | C Programming Expert | Web Developer</p>
+    <div class="header-buttons">
+      <a href="Yves_CV.pdf" download>📄 Download CV</a>
+    </div>
+  </header>
+
+  <!-- About -->
+  <section id="about">
+    <h2>About Me</h2>
+    <div class="about">
+      <img src="https://i.imgur.com/ubhHxBw.png" alt="Yves Profile">
+      <div class="about-text">
+        <p>I am <strong>Yves Nshimiyimana</strong>, a passionate and results-driven <strong>Software Developer</strong> with strong skills in <strong>C Programming, Web Development (HTML, CSS, JavaScript)</strong> and problem-solving.</p>
+        <p>As a <strong>high school graduate and ALX Pathway Foundation graduate</strong>, I have developed a solid foundation in both technical and leadership skills. My goal is to leverage technology to build impactful solutions and inspire innovation.</p>
+        <p>I am driven by curiosity, continuous learning, and a commitment to excellence — qualities that allow me to take on challenges and deliver value in every project I undertake.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <h2>My Skills</h2>
+    <div class="skills">
+      <div class="skill-card">C Programming Language (Expert)</div>
+      <div class="skill-card">HTML & CSS</div>
+      <div class="skill-card">JavaScript</div>
+      <div class="skill-card">Software Development</div>
+      <div class="skill-card">Problem Solving</div>
+      <div class="skill-card">Tech Leadership</div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="projects">
+      <div class="project-card">
+        <h3>Portfolio Website</h3>
+        <p>A responsive personal portfolio built with HTML, CSS, and JavaScript to showcase my skills and achievements.</p>
+      </div>
+      <div class="project-card">
+        <h3>Coming Soon</h3>
+        <p>Placeholder for future projects. Will be updated as I continue building impactful projects.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <h2>Contact Me</h2>
+    <div class="contact">
+      <p>📞 Phone: <a href="tel:+250793082824">+250 793 082 824</a></p>
+      <p>📧 Email: <a href="mailto:yves5g250@gmail.com">yves5g250@gmail.com</a></p>
+      <p>💬 WhatsApp: <a href="https://wa.me/250793082824">Chat on WhatsApp</a></p>
+      <br>
+      <a href="tel:+250793082824" class="btn btn-phone">📞 Call Me</a>
+      <a href="https://wa.me/250793082824" class="btn btn-whatsapp">💬 WhatsApp Me</a>
+      <div class="social-icons">
+        <a href="https://www.linkedin.com/in/YvesNshimiyimana" target="_blank"><i class="fab fa-linkedin"></i></a>
+        <a href="https://github.com/YvesNshimiyimana" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="https://twitter.com/YvesNshimiyimana" target="_blank"><i class="fab fa-twitter"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Yves Nshimiyimana | All Rights Reserved</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/scrollreveal"></script>
+  <script>
+    // Dark/Light Mode Toggle
+    const toggleBtn = document.getElementById('toggle-btn');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      toggleBtn.textContent = document.body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
+    });
+
+    // Hamburger Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('show');
+    });
+
+    // Scroll Reveal Animations
+    ScrollReveal().reveal('header', { delay: 200, duration: 1000, origin: 'top', distance: '50px' });
+    ScrollReveal().reveal('#about img', { delay: 300, duration: 1000, origin: 'left', distance: '50px' });
+    ScrollReveal().reveal('#about .about-text', { delay: 300, duration: 1000, origin: 'right', distance: '50px' });
+    ScrollReveal().reveal('.skill-card', { delay: 200, duration: 1000, interval: 200, origin: 'bottom', distance: '20px' });
+    ScrollReveal().reveal('.project-card', { delay: 200, duration: 1000, interval: 200, origin: 'bottom', distance: '20px' });
+    ScrollReveal().reveal('.contact', { delay: 200, duration: 1000, origin: 'bottom', distance: '20px' });
+  </script>
+</body>
+</html>
