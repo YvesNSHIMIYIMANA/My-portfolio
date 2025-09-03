@@ -1,116 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
   <title>Yves Nshimiyimana - Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Performance: preconnects -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
-    body { background: #f5f7fa; color: #333; line-height: 1.6; padding-top: 70px; transition: background 0.3s, color 0.3s; }
+    /* Base */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { background: #f5f7fa; color: #333; line-height: 1.6; padding-top: 70px; transition: background .3s, color .3s; }
     a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    section { padding: 80px 20px; max-width: 1100px; margin: auto; scroll-margin-top: 90px;
+      /* Faster initial render for long pages */
+      content-visibility: auto; contain-intrinsic-size: 1px 600px;
+    }
+    section h2 { text-align: center; margin-bottom: 40px; font-size: 2rem; color: #0077cc; }
 
     /* Dark Mode */
     body.dark-mode { background: #121212; color: #f0f0f0; }
     body.dark-mode nav { background: #1f1f1f; }
     body.dark-mode nav ul li a:hover { color: #ffcc00; }
-    body.dark-mode .skill-card, body.dark-mode .project-card, body.dark-mode .contact { background: #1f1f1f; box-shadow: 0px 4px 12px rgba(255,255,255,0.05); }
+    body.dark-mode .skill-card, body.dark-mode .project-card, body.dark-mode .contact { background: #1f1f1f; box-shadow: 0 4px 12px rgba(255,255,255,.05); }
     body.dark-mode footer { background: #1f1f1f; }
 
     /* Navbar */
     nav {
       position: fixed; top: 0; left: 0; width: 100%; background: #0077cc;
-      display: flex; justify-content: space-between; align-items: center; padding: 12px 40px; z-index: 1000;
+      display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; z-index: 1000;
     }
-    nav ul { display: flex; list-style: none; gap: 30px; }
-    nav ul li a { color: white; font-weight: 600; transition: color 0.3s; }
-    nav ul li a:hover { color: #ffcc00; }
-    #toggle-btn { cursor: pointer; background: #ffcc00; padding: 8px 15px; border-radius: 6px; font-weight: 600; color: #0077cc; transition: 0.3s; }
-    #toggle-btn:hover { background: #ffc107; }
+    nav .brand { color: #fff; font-weight: 700; letter-spacing: .2px; }
+    nav ul { display: flex; list-style: none; gap: 24px; }
+    nav ul li a { color: #fff; font-weight: 600; transition: color .2s; }
+    nav ul li a:hover, nav ul li a:focus { color: #ffcc00; outline: none; }
 
-    /* Hamburger menu for mobile */
+    /* Dark-mode oval toggle */
+    #mode-toggle {
+      position: relative; width: 56px; height: 30px; border: none; cursor: pointer;
+      background: #ffcc00; border-radius: 9999px; padding: 3px; display: inline-flex; align-items: center;
+      transition: background .25s ease;
+    }
+    #mode-toggle .knob {
+      width: 24px; height: 24px; border-radius: 50%; background: #0077cc;
+      transform: translateX(0); transition: transform .25s ease, background .25s ease;
+    }
+    body.dark-mode #mode-toggle { background: #2a2a2a; }
+    body.dark-mode #mode-toggle .knob { transform: translateX(26px); background: #ffcc00; }
+
+    /* Hamburger (mobile) */
     .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
-    .hamburger div { width: 25px; height: 3px; background: white; transition: 0.3s; }
-    @media screen and (max-width: 768px) {
-      nav ul { position: fixed; top: 70px; left: -100%; flex-direction: column; background: #0077cc; width: 100%; height: calc(100% - 70px); justify-content: center; align-items: center; transition: 0.3s; }
-      nav ul.show { left: 0; }
+    .hamburger div { width: 26px; height: 3px; background: #fff; transition: transform .2s, opacity .2s; }
+
+    /* Mobile menu drawer */
+    #nav-links {
+      display: flex;
+    }
+    @media (max-width: 768px) {
+      #nav-links {
+        position: fixed; top: 70px; left: -100%; flex-direction: column; background: #0077cc; width: 100%;
+        height: calc(100% - 70px); justify-content: center; align-items: center; gap: 28px; transition: left .25s ease;
+      }
+      #nav-links.show { left: 0; }
       .hamburger { display: flex; }
-      #toggle-btn { display: none; }
+      .desktop-only { display: none; }
+      body.menu-open { overflow: hidden; } /* lock body scroll when menu open */
+    }
+    .nav-backdrop {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .nav-backdrop {
+        position: fixed; inset: 70px 0 0 0; background: rgba(0,0,0,.25); backdrop-filter: blur(1px);
+        display: none; z-index: 900;
+      }
+      .nav-backdrop.show { display: block; }
     }
 
     /* Header */
-    header { background: linear-gradient(to right, #0077cc, #00b3b3); color: white; text-align: center; padding: 120px 20px 60px; }
-    header h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 700; }
-    header p { font-size: 1.3rem; font-weight: 400; margin-bottom: 20px; }
-    .header-buttons a { display: inline-block; margin: 10px; padding: 12px 25px; border-radius: 8px; font-weight: 600; color: white; background: #ffcc00; transition: 0.3s; }
-    .header-buttons a:hover { background: #ffc107; }
-
-    /* Sections */
-    section { padding: 80px 20px; max-width: 1100px; margin: auto; }
-    section h2 { text-align: center; margin-bottom: 40px; font-size: 2rem; color: #0077cc; }
+    header { background: linear-gradient(to right, #0077cc, #00b3b3); color: white; text-align: center; padding: 110px 20px 60px; }
+    header h1 { font-size: 2.6rem; margin-bottom: 10px; font-weight: 700; }
+    header p { font-size: 1.1rem; font-weight: 400; margin-bottom: 20px; opacity: .95; }
+    .header-actions { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn {
+      display: inline-block; padding: 12px 20px; border-radius: 10px; font-weight: 600; color: #1b1b1b; background: #ffcc00;
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
 
     /* About */
     .about { display: flex; flex-wrap: wrap; align-items: center; gap: 30px; }
-    .about img { width: 220px; border-radius: 50%; box-shadow: 0px 6px 12px rgba(0,0,0,0.2); transition: transform 0.3s; }
-    .about img:hover { transform: scale(1.05); }
+    .about img { width: 220px; border-radius: 50%; box-shadow: 0 6px 12px rgba(0,0,0,.18); transition: transform .2s; }
+    .about img:hover { transform: scale(1.03); }
     .about-text { flex: 1; }
-    .about-text p { font-size: 1.1rem; margin-bottom: 12px; }
+    .about-text p { font-size: 1.05rem; margin-bottom: 12px; }
 
     /* Skills */
-    .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
-    .skill-card { background: white; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0px 4px 8px rgba(0,0,0,0.1); font-weight: 600; transition: transform 0.3s, background 0.3s; }
-    .skill-card:hover { transform: translateY(-6px); background: #e6f3ff; }
+    .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+    .skill-card {
+      background: #fff; padding: 22px; border-radius: 12px; text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,.08); font-weight: 600; transition: transform .2s, background .2s;
+    }
+    .skill-card:hover { transform: translateY(-4px); background: #e6f3ff; }
 
     /* Projects */
-    .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-    .project-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0px 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s, background 0.3s; }
-    .project-card:hover { transform: translateY(-5px); }
+    .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .project-card {
+      background: #fff; padding: 18px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,.08);
+      transition: transform .2s, background .2s;
+    }
+    .project-card:hover { transform: translateY(-4px); }
     .project-card h3 { margin-bottom: 10px; color: #0077cc; }
 
     /* Contact */
-    .contact { text-align: center; background: #f0f0f0; padding: 50px; border-radius: 12px; transition: background 0.3s; }
-    .contact p { margin: 15px 0; font-size: 1.1rem; }
-    .contact .btn { display: inline-block; margin: 10px; padding: 12px 25px; border-radius: 8px; font-weight: 600; color: white; transition: 0.3s; }
+    .contact { text-align: center; background: #f0f0f0; padding: 40px; border-radius: 12px; transition: background .2s; }
+    .contact p { margin: 12px 0; font-size: 1.05rem; }
+    .contact .btn { color: #fff; }
     .btn-phone { background: #0077cc; }
-    .btn-phone:hover { background: #005fa3; }
+    .btn-phone:hover { filter: brightness(1.1); }
     .btn-whatsapp { background: #25d366; }
-    .btn-whatsapp:hover { background: #1da851; }
-    .social-icons { margin-top: 20px; }
-    .social-icons a { color: #0077cc; font-size: 1.8rem; margin: 0 12px; transition: color 0.3s; }
-    .social-icons a:hover { color: #ffcc00; }
+    .btn-whatsapp:hover { filter: brightness(1.05); }
+    .social-icons { margin-top: 18px; display: flex; justify-content: center; gap: 16px; }
+    .social-icons a { color: #0077cc; font-size: 1.6rem; transition: color .2s, transform .2s; }
+    .social-icons a:hover { color: #ffcc00; transform: translateY(-2px); }
 
     /* Footer */
-    footer { text-align: center; padding: 20px; background: #0077cc; color: white; margin-top: 20px; transition: background 0.3s; }
+    footer { text-align: center; padding: 20px; background: #0077cc; color: white; margin-top: 20px; transition: background .2s; }
 
-    @media screen and (max-width:768px){
+    /* Mobile tweaks */
+    @media (max-width:768px){
       .about { flex-direction: column; align-items: center; text-align: center; }
       .about-text { flex: unset; }
+      header h1 { font-size: 2.2rem; }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
     }
   </style>
 </head>
 <body>
 
   <!-- Navbar -->
-  <nav>
-    <div class="hamburger" id="hamburger">
+  <nav aria-label="Primary">
+    <span class="brand">YN</span>
+
+    <button id="mode-toggle" class="desktop-only" aria-label="Toggle dark mode" aria-pressed="false">
+      <span class="knob" aria-hidden="true"></span>
+    </button>
+
+    <div class="hamburger" id="hamburger" aria-label="Open menu" aria-controls="nav-links" aria-expanded="false" role="button" tabindex="0">
       <div></div><div></div><div></div>
     </div>
+
     <ul id="nav-links">
       <li><a href="#about">About Me</a></li>
       <li><a href="#skills">My Skills</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#contact">Contact Me</a></li>
     </ul>
-    <button id="toggle-btn">Dark Mode</button>
   </nav>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
 
   <!-- Header -->
   <header>
     <h1>Yves Nshimiyimana</h1>
     <p>Software Developer | C Programming Expert | Web Developer</p>
-    <div class="header-buttons">
-      <a href="Yves_CV.pdf" download>📄 Download CV</a>
+    <div class="header-actions">
+      <a class="btn" href="Yves_CV.pdf" download title="Click to download my CV">📄 Download CV</a>
     </div>
   </header>
 
@@ -118,7 +184,7 @@
   <section id="about">
     <h2>About Me</h2>
     <div class="about">
-      <img src="https://i.imgur.com/ubhHxBw.png" alt="Yves Profile">
+      <img src="https://i.imgur.com/ubhHxBw.png" alt="Yves Profile" loading="lazy">
       <div class="about-text">
         <p>I am <strong>Yves Nshimiyimana</strong>, a passionate and results-driven <strong>Software Developer</strong> with strong skills in <strong>C Programming, Web Development (HTML, CSS, JavaScript)</strong> and problem-solving.</p>
         <p>As a <strong>high school graduate and ALX Pathway Foundation graduate</strong>, I have developed a solid foundation in both technical and leadership skills. My goal is to leverage technology to build impactful solutions and inspire innovation.</p>
@@ -161,14 +227,15 @@
     <div class="contact">
       <p>📞 Phone: <a href="tel:+250793082824">+250 793 082 824</a></p>
       <p>📧 Email: <a href="mailto:yves5g250@gmail.com">yves5g250@gmail.com</a></p>
-      <p>💬 WhatsApp: <a href="https://wa.me/250793082824">Chat on WhatsApp</a></p>
+      <p>💬 WhatsApp: <a href="https://wa.me/250793082824" target="_blank" rel="noopener">Chat on WhatsApp</a></p>
       <br>
       <a href="tel:+250793082824" class="btn btn-phone">📞 Call Me</a>
-      <a href="https://wa.me/250793082824" class="btn btn-whatsapp">💬 WhatsApp Me</a>
+      <a href="https://wa.me/250793082824" class="btn btn-whatsapp" target="_blank" rel="noopener">💬 WhatsApp Me</a>
       <div class="social-icons">
-        <a href="https://www.linkedin.com/in/YvesNshimiyimana" target="_blank"><i class="fab fa-linkedin"></i></a>
-        <a href="https://github.com/YvesNshimiyimana" target="_blank"><i class="fab fa-github"></i></a>
-        <a href="https://twitter.com/YvesNshimiyimana" target="_blank"><i class="fab fa-twitter"></i></a>
+        <!-- Updated links -->
+        <a href="http://www.linkedin.com/in/yves-nshimiyimana-870411341" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        <a href="https://github.com/YvesNshimiyimana" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://x.com/yves5g250?t=OxtSkxX5pxUdRRxIu-_V0Q&s=09" target="_blank" rel="noopener" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
       </div>
     </div>
   </section>
@@ -178,32 +245,74 @@
     <p>© 2025 Yves Nshimiyimana | All Rights Reserved</p>
   </footer>
 
-  <!-- Scripts -->
-  <script src="https://unpkg.com/scrollreveal"></script>
+  <!-- Scripts (deferred for speed) -->
+  <script src="https://unpkg.com/scrollreveal" defer></script>
   <script>
-    // Dark/Light Mode Toggle
-    const toggleBtn = document.getElementById('toggle-btn');
-    toggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-      toggleBtn.textContent = document.body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
-    });
+    // Restore dark mode preference ASAP (no flash)
+    (function() {
+      try {
+        const pref = localStorage.getItem('prefers-dark');
+        if (pref === 'true') document.body.classList.add('dark-mode');
+      } catch(e) {}
+    })();
 
-    // Hamburger Menu Toggle
-    const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('nav-links');
-    hamburger.addEventListener('click', () => {
-      navLinks.classList.toggle('show');
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+      // Dark mode toggle pill
+      const modeToggle = document.getElementById('mode-toggle');
+      const updatePressed = () => modeToggle.setAttribute('aria-pressed', document.body.classList.contains('dark-mode') ? 'true' : 'false');
+      modeToggle?.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        try { localStorage.setItem('prefers-dark', document.body.classList.contains('dark-mode')); } catch(e) {}
+        updatePressed();
+      });
+      updatePressed();
 
-    // Scroll Reveal Animations
-    ScrollReveal().reveal('header', { delay: 200, duration: 1000, origin: 'top', distance: '50px' });
-    ScrollReveal().reveal('#about img', { delay: 300, duration: 1000, origin: 'left', distance: '50px' });
-    ScrollReveal().reveal('#about .about-text', { delay: 300, duration: 1000, origin: 'right', distance: '50px' });
-    ScrollReveal().reveal('.skill-card', { delay: 200, duration: 1000, interval: 200, origin: 'bottom', distance: '20px' });
-    ScrollReveal().reveal('.project-card', { delay: 200, duration: 1000, interval: 200, origin: 'bottom', distance: '20px' });
-    ScrollReveal().reveal('.contact', { delay: 200, duration: 1000, origin: 'bottom', distance: '20px' });
+      // Mobile menu toggle
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('nav-links');
+      const backdrop = document.getElementById('nav-backdrop');
+
+      function openMenu() {
+        navLinks.classList.add('show');
+        backdrop.classList.add('show');
+        document.body.classList.add('menu-open');
+        hamburger.setAttribute('aria-expanded', 'true');
+      }
+      function closeMenu() {
+        navLinks.classList.remove('show');
+        backdrop.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+
+      hamburger.addEventListener('click', () => {
+        const isOpen = navLinks.classList.contains('show');
+        isOpen ? closeMenu() : openMenu();
+      });
+      // Also close when clicking backdrop
+      backdrop.addEventListener('click', closeMenu);
+      // Close on nav link click (mobile)
+      navLinks.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => { closeMenu(); });
+      });
+      // Keyboard accessibility
+      hamburger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hamburger.click(); }
+        if (e.key === 'Escape') closeMenu();
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+      // Scroll Reveal (kept lightweight)
+      if (window.ScrollReveal) {
+        const sr = ScrollReveal({ distance: '24px', duration: 700, easing: 'ease-out', interval: 80, mobile: true, reset: false });
+        sr.reveal('header', { origin: 'top' });
+        sr.reveal('#about img', { origin: 'left' });
+        sr.reveal('#about .about-text', { origin: 'right' });
+        sr.reveal('.skill-card', { origin: 'bottom' });
+        sr.reveal('.project-card', { origin: 'bottom' });
+        sr.reveal('.contact', { origin: 'bottom' });
+      }
+    });
   </script>
 </body>
 </html>
-
-
